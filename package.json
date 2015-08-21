@@ -4,7 +4,8 @@
   "description": "Simple useful fetch client",
   "main": "./dist/EasyAgent.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm run test && babel ./src --ignore __tests__/* --out-dir ./dist",
+    "test": "mocha -u bdd -R spec --compilers es6:babel/register -r ./src/__tests__/initializer.es6 ./src/**/__tests__/**/*.spec.es6"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,10 @@
   "homepage": "https://github.com/axross/easyagent-next#readme",
   "dependencies": {
     "querystring": "^0.2.0"
+  },
+  "devDependencies": {
+    "babel": "^5.8.21",
+    "mocha": "^2.2.5",
+    "should": "^7.0.4"
   }
 }
