@@ -1,0 +1,25 @@
+{
+  "name": "easyagent",
+  "version": "0.1.0",
+  "description": "Simple useful fetch client",
+  "main": "./dist/EasyAgent.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/axross/easyagent-next.git"
+  },
+  "keywords": [
+    "fetch",
+    "ajax",
+    "http",
+    "client"
+  ],
+  "author": "axross <kou@axross.org> (http://axross.me/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/axross/easyagent-next/issues"
+  },
+  "homepage": "https://github.com/axross/easyagent-next#readme"
+}
