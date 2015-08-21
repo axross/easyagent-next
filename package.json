@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/axross/easyagent-next/issues"
   },
-  "homepage": "https://github.com/axross/easyagent-next#readme"
+  "homepage": "https://github.com/axross/easyagent-next#readme",
+  "dependencies": {
+    "querystring": "^0.2.0"
+  }
 }

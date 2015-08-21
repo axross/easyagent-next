@@ -1,4 +1,5 @@
-const {
+import querystring from 'querystring';
+import {
   enumOf,
   METHOD_EXPECTS,
   REFERRER_EXPECTS,
@@ -8,14 +9,27 @@ const {
   CACHE_EXPECTS,
 } from './utils/enum';
 
+// get global object
+const global = Function("return this")();
+
+if (typeof global.fetch !== 'function') {
+  throw new ReferenceError('EasyAgent needs fetch() function.');
+}
+
 class EasyAgent {
-  constructor({ url, queries, method, headers, body, rederrer, rederrerPolicy,
+  constructor({ url, queries = {}, method, headers = {}, body = null, rederrer, rederrerPolicy,
                 mode, credentials, cache, redirect, integrity, json, form }) {
-    this.url = url;
-    this.queries = Object(queries) || {};
+    const urlWithoutQueries = url.split('?', 2)[0];
+    const queriesAssignedFromUrl = Object.assign(
+      querystring.parse(url.split('?', 2)[1] || ''),
+      queries
+    );
+
+    this.url = urlWithoutQueries;
+    this.queries = queriesAssignedFromUrl;
     this.method = enumOf(String(method).toUpperCase(), METHOD_EXPECTS, 'GET');
-    this.headers = Object(headers) || {};
-    this.body = body || null;
+    this.headers = headers;
+    this.body = body;
     this.referrer = enumOf(referrer, REFERRER_EXPECTS, referrer);
     this.referrerPolicy = enumOf(referrerPolicy, REFERRER_POLICY_EXPECTS, '');
     this.mode = enumOf(mode, MODE_EXPECTS, 'no-cors');
@@ -27,12 +41,15 @@ class EasyAgent {
     this.__bodyType = 'any';
 
     if (Object.prototype.toString.call(json) === '[object Object]') {
-      this.body = Object(json);
+      this.body = JSON.stringify(json);
       this.__bodyType = 'json';
     }
-    if (Object.prototype.toString.call(form) === '[object Object]' ||
-        Object.prototype.toString.call(form) === '[object FormData]') {
-      this.body = Object(form);
+    if (Object.prototype.toString.call(form) === '[object Object]') {
+      this.body = new FormData(form);
+      this.__bodyType = 'formData';
+    }
+    if (Object.prototype.toString.call(form) === '[object FormData]') {
+      this.body = form;
       this.__bodyType = 'formData';
     }
   }
@@ -50,26 +67,32 @@ class EasyAgent {
     return this.set(Object.assign(Object(this), { queries, headers }));
   }
 
-  fetch() {
-    const headers = {
+  fetch(mimetype = 'text/plain') {
+    if (this.__bodyType === 'json') {
+      this.headers = Object.assign({
+        'accept': mimetype,
+        'content-type': 'application/json',
+      }, this.headers);
+    } else if (this.__bodyType === 'formData') {
+      this.headers = Object.assign({
+        'accept': mimetype,
+        'content-type': 'application/x-www-form-urlencoded',
+      }, this.headers);
+    } else {
+      this.headers = Object.assign({
+        'accept': mimetype,
+      }, this.headers);
+    }
 
-    };
+    const stringified = querystring.stringify(this.queries);
+    const mergedUrl = `${this.url}${stringified ? '?' : ''}${stringified}`;
+
+    return fetch(mergedUrl, this);
   }
 
   fetchJson() {
-
-  }
-
-  fetchText() {
-
-  }
-
-  __preprocessHeaders(headers) {
-    const processed = {};
-
-    return Object.keys(headers).forEach(key => {
-      processed[key.toLowerCase()] = headers[key];
-    });
+    return this.fetch('application/json')
+      .then(res => res.json());
   }
 
   static get(url, options = {}) {
