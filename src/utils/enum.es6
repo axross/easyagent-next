@@ -3,6 +3,10 @@ export const enumOf = (value, expects, otherwise) => {
     if (expects[i] === value) return value;
   }
 
+  if (typeof otherwise === 'undefined') {
+    throw new TypeError(`It expects one of values : ${expects.join(', ')}.`);
+  }
+
   return otherwise;
 };
 
@@ -48,4 +52,10 @@ export const CACHE_EXPECTS = [
   'no-cache',
   'force-cache',
   'only-if-cached'
+];
+
+export const REDIRECT_EXPECTS = [
+  'follow',
+  'error',
+  'manual'
 ];

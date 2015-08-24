@@ -7,6 +7,7 @@ import {
   MODE_EXPECTS,
   CREDENTIALS_EXPECTS,
   CACHE_EXPECTS,
+  REDIRECT_EXPECTS,
 } from './utils/enum';
 
 // get global object
@@ -16,9 +17,10 @@ if (typeof global.fetch !== 'function') {
   throw new ReferenceError('EasyAgent needs fetch() function.');
 }
 
-class EasyAgent {
-  constructor({ url, queries = {}, method, headers = {}, body = null, rederrer, rederrerPolicy,
-                mode, credentials, cache, redirect, integrity, json, form }) {
+export class EasyAgent {
+  constructor({ url, queries = {}, method, headers = {}, body = null, referrer,
+                referrerPolicy, mode, credentials, cache, redirect, integrity,
+                json, form }) {
     const urlWithoutQueries = url.split('?', 2)[0];
     const queriesAssignedFromUrl = Object.assign(
       querystring.parse(url.split('?', 2)[1] || ''),
@@ -143,3 +145,5 @@ class EasyAgent {
     });
   }
 }
+
+export default EasyAgent;
