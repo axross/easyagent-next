@@ -21,6 +21,8 @@ export class EasyAgent {
   constructor({ url, queries = {}, method, headers = {}, body = null, referrer,
                 referrerPolicy, mode, credentials, cache, redirect, integrity,
                 json, form }) {
+    if (!url) throw new RefferenceError('url is required.')
+
     const urlWithoutQueries = url.split('?', 2)[0];
     const queriesAssignedFromUrl = Object.assign(
       querystring.parse(url.split('?', 2)[1] || ''),
@@ -32,7 +34,7 @@ export class EasyAgent {
     this.method = enumOf(String(method).toUpperCase(), METHOD_EXPECTS, 'GET');
     this.headers = headers;
     this.body = body;
-    this.referrer = enumOf(referrer, REFERRER_EXPECTS, referrer);
+    this.referrer = enumOf(referrer, REFERRER_EXPECTS, referrer || '');
     this.referrerPolicy = enumOf(referrerPolicy, REFERRER_POLICY_EXPECTS, '');
     this.mode = enumOf(mode, MODE_EXPECTS, 'no-cors');
     this.credentials = enumOf(credentials, CREDENTIALS_EXPECTS, 'omit');
