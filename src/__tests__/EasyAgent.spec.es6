@@ -74,7 +74,7 @@ describe('EasyAgent', () => {
     });
 
     it('should throw exception if url is undefined', () => {
-
+      should(() => { new EasyAgent({}) }).be.throw();
     });
 
     it('should set __bodyType "json" if json is an instance of plain Object', () => {

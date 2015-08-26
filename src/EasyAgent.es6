@@ -21,7 +21,7 @@ export class EasyAgent {
   constructor({ url, queries = {}, method, headers = {}, body = null, referrer,
                 referrerPolicy, mode, credentials, cache, redirect, integrity,
                 json, form }) {
-    if (!url) throw new RefferenceError('url is required.')
+    if (!url) throw new ReferenceError('url is required.')
 
     const urlWithoutQueries = url.split('?', 2)[0];
     const queriesAssignedFromUrl = Object.assign(
