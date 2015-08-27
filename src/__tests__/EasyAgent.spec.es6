@@ -78,27 +78,93 @@ describe('EasyAgent', () => {
     });
 
     it('should set __bodyType "json" if json is an instance of plain Object', () => {
+      const valid = new EasyAgent({
+        url: '/path/to/api',
+        json: {
+          query: 'test',
+          offset: 40,
+          limit: 20,
+        },
+      });
 
+      should(valid.body).be.equal('{"query":"test","offset":40,"limit":20}');
+      should(valid.__bodyType).be.equal('json');
+
+      const invalid = new EasyAgent({
+        url: '/path/to/api',
+        json: 'why string?',
+      });
+
+      should(invalid.body).be.equal(null);  // default
+      should(invalid.__bodyType).be.equal('any');
     });
 
     it('should set __bodyType "formData" if form is an instance of plain Object', () => {
+      global.FormData = () => {};
 
+      const valid = new EasyAgent({
+        url: '/path/to/api',
+        form: {
+          query: 'test',
+          offset: 40,
+          limit: 20,
+        },
+      });
+
+      should(valid.body).be.instanceof(FormData);
+      should(valid.__bodyType).be.equal('formData');
+
+      const invalid = new EasyAgent({
+        url: '/path/to/api',
+        form: 'why string?',
+      });
+
+      should(invalid.body).be.equal(null);  // default
+      should(invalid.__bodyType).be.equal('any');
+
+      delete global.FormData;
     });
 
     it('should set __bodyType "formData" if form is an instance of FormData', () => {
+      global.FormData = () => {};
+      global.FormData.prototype[Symbol.toStringTag] = 'FormData';
 
+      const agent = new EasyAgent({
+        url: '/path/to/api',
+        form: new FormData(),
+      });
+
+      should(agent.body).be.instanceof(FormData);
+      should(agent.__bodyType).be.equal('formData');
+
+      delete global.FormData;
     });
 
     it('should set url such as pathname (query is removed)', () => {
+      const agent = new EasyAgent({
+        url: '/path/to/api?do=you&like=easyagent',
+      });
 
+      should(agent.url).be.equal('/path/to/api');
     });
 
     it('should set queries from parsing url', () => {
+      const agent = new EasyAgent({
+        url: '/path/to/api?do=you&like=easyagent',
+      });
 
+      should(agent.queries).be.eql({
+        do: 'you',
+        like: 'easyagent',
+      });
     });
 
     it('should set through queries as default', () => {
+      const agent = new EasyAgent({
+        url: '/path/to/api',
+      });
 
+      should(agent.queries).be.eql({});
     });
   });
 });
