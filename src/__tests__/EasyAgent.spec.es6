@@ -167,4 +167,38 @@ describe('EasyAgent', () => {
       should(agent.queries).be.eql({});
     });
   });
+
+  describe('EasyAgent#set()', () => {
+    it('should return an another one', () => {
+      const agent = new EasyAgent({
+        url: '/path/to/api',
+      });
+
+      const another = agent.set();
+
+      should(another).be.not.equal(agent);
+    });
+
+    it('should overwrite values', () => {
+      const agent = new EasyAgent({
+        url: '/path/to/api',
+        method: 'POST',
+        queries: {
+          q: 'easyagent',
+          offset: 10,
+        },
+      });
+
+      const updated = agent.set({
+        method: 'PUT',
+        queries: {
+          q: 'bemmer',
+        },
+      });
+
+      should(updated.url).be.equal('/path/to/api');
+      should(updated.method).be.equal('PUT');
+      should(updated.queries).be.eql({ q: 'bemmer' });
+    });
+  });
 });

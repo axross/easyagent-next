@@ -8,7 +8,7 @@ import {
   CREDENTIALS_EXPECTS,
   CACHE_EXPECTS,
   REDIRECT_EXPECTS,
-} from './utils/enum';
+} from './enum';
 
 // get global object
 const global = Function("return this")();
@@ -61,14 +61,7 @@ export class EasyAgent {
   set(options) {
     const assigned = Object.assign({}, Object(this), options);
 
-    return new EasyAgent(merged);
-  }
-
-  assign(options) {
-    const queries = Object.assign({}, this.queries, options.queries);
-    const headers = Object.assign({}, this.headers, options.headers);
-
-    return this.set(Object.assign(Object(this), { queries, headers }));
+    return new EasyAgent(assigned);
   }
 
   fetch(mimetype = 'text/plain') {
