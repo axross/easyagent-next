@@ -64,7 +64,7 @@ export class EasyAgent {
     return new EasyAgent(assigned);
   }
 
-  fetch(mimetype = 'text/plain') {
+  fetch(mimetype) {
     if (this.__bodyType === 'json') {
       this.headers = Object.assign({
         'accept': mimetype,
@@ -75,7 +75,7 @@ export class EasyAgent {
         'accept': mimetype,
         'content-type': 'application/x-www-form-urlencoded',
       }, this.headers);
-    } else {
+    } else if (typeof mimetype === 'string') {
       this.headers = Object.assign({
         'accept': mimetype,
       }, this.headers);
